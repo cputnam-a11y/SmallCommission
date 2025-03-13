@@ -1,5 +1,7 @@
 package io.github.cputnama11y.smallcommission.handler;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -27,11 +29,8 @@ import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.spongepowered.include.com.google.gson.Gson;
-import org.spongepowered.include.com.google.gson.GsonBuilder;
 
 import java.io.FileWriter;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +75,7 @@ public class ShopHandler implements ClientEntityEvents.Load, ClientBlockEntityEv
     @Override
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess
             registryAccess) {
-        final var output = FabricLoader.getInstance().getGameDir().resolve("./output.jsonx");
+        final var output = FabricLoader.getInstance().getGameDir().resolve("./output.json");
         var mainNode = ClientCommandManager.literal("shop-logger")
                 .executes(context -> {
                     exceptionToResult(
@@ -126,7 +125,6 @@ public class ShopHandler implements ClientEntityEvents.Load, ClientBlockEntityEv
     }
 
     private record ShopData(ItemFrameEntity entity, SignBlockEntity blockEntity) {
-        private static final List<WeakReference<ShopData>> DATA_INTERN = new ArrayList<>();
         private static final Codec<NbtElement> NBT_ELEMENT_CODEC = Codec.PASSTHROUGH.xmap(
                 dynamic -> dynamic.convert(NbtOps.INSTANCE).into(
                         Dynamic::getValue
