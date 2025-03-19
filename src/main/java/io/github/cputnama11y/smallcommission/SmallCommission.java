@@ -5,8 +5,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class SmallCommission implements ClientModInitializer {
     public static final String MOD_ID = "smallcommission";
@@ -14,10 +17,8 @@ public class SmallCommission implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        List<Event<? super ShopHandler>> events = List.of(ClientEntityEvents.ENTITY_LOAD, ClientBlockEntityEvents.BLOCK_ENTITY_LOAD, ClientCommandRegistrationCallback.EVENT);
         var handler = new ShopHandler();
-        ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register(handler);
-        ClientEntityEvents.ENTITY_LOAD.register(handler);
-        ClientEntityEvents.ENTITY_UNLOAD.register(handler);
-        ClientCommandRegistrationCallback.EVENT.register(handler);
+        events.forEach(event -> event.register(handler));
     }
 }
